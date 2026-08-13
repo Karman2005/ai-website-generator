@@ -35,21 +35,26 @@ const charCount = document.getElementById("charCount");
 
 
 // =====================================================
-// CHECK REQUIRED ELEMENTS
+// STARTUP
 // =====================================================
 
 console.log("AI Website Generator loaded.");
 
+
+// =====================================================
+// CHECK ELEMENTS
+// =====================================================
+
 if (!promptInput) {
-    console.error("Element #prompt not found");
+    console.error("❌ #prompt not found");
 }
 
 if (!generateBtn) {
-    console.error("Element #generateBtn not found");
+    console.error("❌ #generateBtn not found");
 }
 
 if (!preview) {
-    console.error("Element #preview not found");
+    console.error("❌ #preview not found");
 }
 
 
@@ -87,20 +92,53 @@ if (generateBtn) {
 
 async function generateWebsite() {
 
-    const prompt = promptInput.value.trim();
+    const prompt =
+        promptInput.value.trim();
+
+
+    // -------------------------------------------------
+    // VALIDATION
+    // -------------------------------------------------
 
     if (!prompt) {
-        alert("Please describe the website you want to generate.");
+
+        alert(
+            "Please describe the website you want to generate."
+        );
+
         return;
+
     }
 
+
+    // -------------------------------------------------
+    // BUTTON LOADING
+    // -------------------------------------------------
+
     generateBtn.disabled = true;
-    generateBtn.textContent = "✨ Generating...";
+
+    generateBtn.textContent =
+        "✨ Generating...";
+
 
     console.log("🚀 Generate started");
-    console.log("Prompt:", prompt);
+
+    console.log(
+        "API:",
+        `${API_URL}/generate`
+    );
+
+    console.log(
+        "Prompt:",
+        prompt
+    );
+
 
     try {
+
+        // -------------------------------------------------
+        // SEND REQUEST
+        // -------------------------------------------------
 
         const response = await fetch(
             `${API_URL}/generate`,
@@ -118,15 +156,20 @@ async function generateWebsite() {
             }
         );
 
+
         console.log(
             "Backend status:",
             response.status
         );
 
 
-        // Get response as text first
+        // -------------------------------------------------
+        // READ RESPONSE
+        // -------------------------------------------------
+
         const responseText =
             await response.text();
+
 
         console.log(
             "Raw backend response:",
@@ -134,14 +177,17 @@ async function generateWebsite() {
         );
 
 
-        // Convert response to JSON
         let data;
+
 
         try {
 
-            data = JSON.parse(responseText);
+            data =
+                JSON.parse(responseText);
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.error(
                 "JSON parse error:",
@@ -161,7 +207,10 @@ async function generateWebsite() {
         );
 
 
-        // Check HTTP error
+        // -------------------------------------------------
+        // HTTP ERROR
+        // -------------------------------------------------
+
         if (!response.ok) {
 
             throw new Error(
@@ -172,16 +221,14 @@ async function generateWebsite() {
         }
 
 
-        // Check HTML
+        // -------------------------------------------------
+        // VALIDATE RESPONSE
+        // -------------------------------------------------
+
         if (
             !data.html ||
             typeof data.html !== "string"
         ) {
-
-            console.error(
-                "HTML missing:",
-                data
-            );
 
             throw new Error(
                 "Backend did not return valid HTML."
@@ -190,29 +237,32 @@ async function generateWebsite() {
         }
 
 
-        // ==========================================
-        // SAVE GENERATED WEBSITE
-        // ==========================================
+        // -------------------------------------------------
+        // SAVE WEBSITE
+        // -------------------------------------------------
 
-        generatedWebsite.html =
-            data.html;
+        generatedWebsite = {
 
-        generatedWebsite.css =
-            data.css || "";
+            html:
+                data.html || "",
 
-        generatedWebsite.js =
-            data.js || "";
+            css:
+                data.css || "",
+
+            js:
+                data.js || ""
+
+        };
 
 
         console.log(
-            "✅ generatedWebsite updated:",
-            generatedWebsite
+            "✅ Website received"
         );
 
 
-        // ==========================================
-        // SHOW HTML FILE
-        // ==========================================
+        // -------------------------------------------------
+        // SHOW HTML
+        // -------------------------------------------------
 
         currentFile = "html";
 
@@ -221,18 +271,19 @@ async function generateWebsite() {
         updateCode();
 
 
-        // ==========================================
-        // RENDER PREVIEW
-        // ==========================================
+        // -------------------------------------------------
+        // UPDATE PREVIEW
+        // -------------------------------------------------
 
         updatePreview();
 
 
         console.log(
-            "🎉 Website generation completed!"
+            "🎉 Website generated successfully!"
         );
 
     }
+
 
     catch (error) {
 
@@ -241,11 +292,13 @@ async function generateWebsite() {
             error
         );
 
+
         alert(
             `Generation failed: ${error.message}`
         );
 
     }
+
 
     finally {
 
@@ -320,7 +373,7 @@ function updateCode() {
 
     codeOutput.textContent =
         code ||
-        "Your generated code will appear here...";
+        "Your generated code will appear here.";
 
 }
 
@@ -401,7 +454,7 @@ function updatePreview() {
 
 
     // -------------------------------------------------
-    // Check HTML
+    // EMPTY PREVIEW
     // -------------------------------------------------
 
     if (!generatedWebsite.html) {
@@ -415,6 +468,11 @@ function updatePreview() {
 <head>
 
 <meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
 <title>Preview</title>
 
@@ -438,7 +496,7 @@ function updatePreview() {
 
 </html>
 
-        `;
+`;
 
         return;
 
@@ -446,19 +504,29 @@ function updatePreview() {
 
 
     console.log(
-        "Updating live preview..."
+        "🌐 Updating live preview..."
     );
 
 
-    // -------------------------------------------------
-    // Create complete document
-    // -------------------------------------------------
+    const html =
+        generatedWebsite.html;
+
+    const css =
+        generatedWebsite.css;
+
+    const js =
+        generatedWebsite.js;
+
+
+    // =================================================
+    // CREATE SAFE PREVIEW DOCUMENT
+    // =================================================
 
     const documentContent = `
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 
 <head>
 
@@ -469,14 +537,16 @@ function updatePreview() {
     content="width=device-width, initial-scale=1.0"
 >
 
-<title>AI Generated Website</title>
+<title>Generated Website</title>
 
 
 <style>
 
-/* Generated CSS */
+/* ==============================
+   GENERATED CSS
+============================== */
 
-${generatedWebsite.css}
+${css}
 
 </style>
 
@@ -485,22 +555,138 @@ ${generatedWebsite.css}
 
 <body>
 
-<!-- Generated HTML -->
+<!-- ==============================
+     GENERATED HTML
+============================== -->
 
-${generatedWebsite.html}
+${html}
 
 
-<!-- Generated JavaScript -->
+<!-- ==============================
+     GENERATED JAVASCRIPT
+============================== -->
 
 <script>
 
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        // =========================================
+        // HANDLE GENERATED LINKS
+        // =========================================
+
+        document
+            .querySelectorAll("a")
+            .forEach(function (link) {
+
+                const href =
+                    link.getAttribute("href");
+
+
+                if (!href) {
+                    return;
+                }
+
+
+                // ---------------------------------
+                // SECTION LINKS
+                // Example: #about
+                // ---------------------------------
+
+                if (href.startsWith("#")) {
+
+                    link.addEventListener(
+                        "click",
+                        function (event) {
+
+                            const target =
+                                document.querySelector(
+                                    href
+                                );
+
+
+                            if (target) {
+
+                                event.preventDefault();
+
+                                target.scrollIntoView({
+                                    behavior: "smooth",
+                                    block: "start"
+                                });
+
+                            }
+
+                        }
+                    );
+
+                    return;
+
+                }
+
+
+                // ---------------------------------
+                // EXTERNAL LINKS
+                // ---------------------------------
+
+                if (
+                    href.startsWith("http://") ||
+                    href.startsWith("https://")
+                ) {
+
+                    link.setAttribute(
+                        "target",
+                        "_blank"
+                    );
+
+                    link.setAttribute(
+                        "rel",
+                        "noopener noreferrer"
+                    );
+
+                }
+
+            });
+
+
+        // =========================================
+        // HANDLE FORMS
+        // =========================================
+
+        document
+            .querySelectorAll("form")
+            .forEach(function (form) {
+
+                form.addEventListener(
+                    "submit",
+                    function (event) {
+
+                        event.preventDefault();
+
+                        alert(
+                            "Form submitted successfully!"
+                        );
+
+                    }
+                );
+
+            });
+
+    }
+);
+
+
+// =============================================
+// GENERATED JAVASCRIPT
+// =============================================
+
 try {
 
-${generatedWebsite.js}
+${js}
 
 }
 
-catch(error) {
+catch (error) {
 
 console.error(
     "Generated website JavaScript error:",
@@ -519,16 +705,16 @@ console.error(
 `;
 
 
-    // -------------------------------------------------
-    // Put website into iframe
-    // -------------------------------------------------
+    // =================================================
+    // SET IFRAME CONTENT
+    // =================================================
 
     preview.srcdoc =
         documentContent;
 
 
     console.log(
-        "Live preview updated."
+        "✅ Live preview updated."
     );
 
 }
@@ -569,7 +755,7 @@ if (copyBtn) {
             if (
                 !code ||
                 code ===
-                "Your generated code will appear here..."
+                "Your generated code will appear here."
             ) {
 
                 alert(
@@ -583,7 +769,8 @@ if (copyBtn) {
 
             try {
 
-                await navigator.clipboard
+                await navigator
+                    .clipboard
                     .writeText(code);
 
 
@@ -644,7 +831,7 @@ async function modifyWebsite() {
 
 
     // -------------------------------------------------
-    // Check website
+    // CHECK WEBSITE
     // -------------------------------------------------
 
     if (!generatedWebsite.html) {
@@ -659,7 +846,7 @@ async function modifyWebsite() {
 
 
     // -------------------------------------------------
-    // Check instruction
+    // CHECK INSTRUCTION
     // -------------------------------------------------
 
     if (!instruction) {
@@ -674,7 +861,7 @@ async function modifyWebsite() {
 
 
     // -------------------------------------------------
-    // Disable button
+    // LOADING
     // -------------------------------------------------
 
     modifyBtn.disabled = true;
@@ -683,58 +870,78 @@ async function modifyWebsite() {
         "✨ Modifying...";
 
 
+    console.log(
+        "🚀 Modification started"
+    );
+
+
     try {
 
-        console.log(
-            "Sending modification request..."
-        );
+        const response =
+            await fetch(
+                `${API_URL}/modify`,
+                {
+                    method: "POST",
 
+                    headers: {
+                        "Content-Type":
+                            "application/json",
 
-        // -------------------------------------------------
-        // API REQUEST
-        // -------------------------------------------------
+                        "Accept":
+                            "application/json"
+                    },
 
-        const response = await fetch(
-            `${API_URL}/modify`,
-            {
-                method: "POST",
+                    body: JSON.stringify({
 
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
+                        html:
+                            generatedWebsite.html,
 
-                body: JSON.stringify({
+                        css:
+                            generatedWebsite.css,
 
-                    html:
-                        generatedWebsite.html,
+                        js:
+                            generatedWebsite.js,
 
-                    css:
-                        generatedWebsite.css,
+                        instruction:
+                            instruction
 
-                    js:
-                        generatedWebsite.js,
+                    })
 
-                    instruction:
-                        instruction
-
-                })
-            }
-        );
+                }
+            );
 
 
         console.log(
-            "Modify response status:",
+            "Modify status:",
             response.status
         );
 
 
         // -------------------------------------------------
-        // Read response
+        // READ RESPONSE
         // -------------------------------------------------
 
-        const data =
-            await response.json();
+        const responseText =
+            await response.text();
+
+
+        let data;
+
+
+        try {
+
+            data =
+                JSON.parse(responseText);
+
+        }
+
+        catch (error) {
+
+            throw new Error(
+                "Backend returned invalid JSON."
+            );
+
+        }
 
 
         console.log(
@@ -744,7 +951,7 @@ async function modifyWebsite() {
 
 
         // -------------------------------------------------
-        // Check error
+        // HTTP ERROR
         // -------------------------------------------------
 
         if (!response.ok) {
@@ -758,7 +965,7 @@ async function modifyWebsite() {
 
 
         // -------------------------------------------------
-        // Validate HTML
+        // VALIDATE
         // -------------------------------------------------
 
         if (!data.html) {
@@ -771,7 +978,7 @@ async function modifyWebsite() {
 
 
         // -------------------------------------------------
-        // Update website
+        // UPDATE WEBSITE
         // -------------------------------------------------
 
         generatedWebsite = {
@@ -788,14 +995,8 @@ async function modifyWebsite() {
         };
 
 
-        console.log(
-            "Modified website:",
-            generatedWebsite
-        );
-
-
         // -------------------------------------------------
-        // Show HTML
+        // SHOW UPDATED WEBSITE
         // -------------------------------------------------
 
         currentFile =
@@ -810,14 +1011,14 @@ async function modifyWebsite() {
 
 
         // -------------------------------------------------
-        // Clear input
+        // CLEAR INPUT
         // -------------------------------------------------
 
         modifyPrompt.value = "";
 
 
         console.log(
-            "Website modified successfully."
+            "🎉 Website modified successfully!"
         );
 
     }
@@ -826,13 +1027,13 @@ async function modifyWebsite() {
     catch (error) {
 
         console.error(
-            "Modification error:",
+            "❌ Modification error:",
             error
         );
 
 
         alert(
-            `Error: ${error.message}`
+            `Modification failed: ${error.message}`
         );
 
     }

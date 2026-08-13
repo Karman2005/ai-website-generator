@@ -764,33 +764,20 @@ footer {
        LIVE PREVIEW
     ------------------------- */
 
-    .preview-panel {
-        width: 100%;
+   #preview {
+    width: 100%;
+    height: calc(100% - 48px);
+    min-height: 550px;
+    border: none;
+    display: block;
+    background: white;
+}
 
-        height: 500px;
-
-        min-height: 500px;
-
-        display: block;
-
-        background: white;
-
-        flex-shrink: 0;
-    }
-
-    #preview {
-        width: 100%;
-
-        height: calc(100% - 48px);
-
-        min-height: 452px;
-
-        display: block;
-
-        border: none;
-
-        background: white;
-    }
+.preview-panel {
+    background: white;
+    min-height: 600px;
+    overflow: hidden;
+}
 
 
     /* -------------------------
