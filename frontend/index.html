@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Website Generator</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header class="topbar">
+        <div class="brand">
+            <span class="logo">AI</span>
+            <span>Website Generator</span>
+        </div>
+
+        <div class="status">
+            <span class="status-dot"></span>
+            AI Ready
+        </div>
+    </header>
+
+
+    <main>
+
+        <!-- Hero -->
+        <section class="generator">
+
+            <div class="heading">
+                <span class="badge">✨ AI POWERED</span>
+
+                <h1>
+                    Build websites with
+                    <span>AI</span>
+                </h1>
+
+                <p>
+                    Describe your website and let AI generate
+                    the HTML, CSS and JavaScript for you.
+                </p>
+            </div>
+
+
+            <!-- Prompt -->
+            <div class="prompt-box">
+
+                <textarea
+    id="prompt"
+    name="website-prompt"
+    autocomplete="off"
+    spellcheck="false"
+    placeholder="Example: Create a modern portfolio website..."
+></textarea>
+
+                <div class="prompt-footer">
+
+                    <span id="charCount">0 / 1000</span>
+
+                    <button id="generateBtn">
+                        ✨ Generate Website
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Workspace -->
+        <section class="workspace">
+
+            <!-- Files -->
+            <aside class="sidebar">
+
+                <div class="panel-title">
+                    <span>📁</span>
+                    Files
+                </div>
+
+                <button class="file active" data-file="html">
+                    <span>📄</span>
+                    index.html
+                </button>
+
+                <button class="file" data-file="css">
+                    <span>🎨</span>
+                    style.css
+                </button>
+
+                <button class="file" data-file="js">
+                    <span>⚡</span>
+                    script.js
+                </button>
+
+            </aside>
+
+
+            <!-- Code -->
+            <section class="code-panel">
+
+                <div class="panel-header">
+                    <span id="currentFile">index.html</span>
+
+                    <button id="copyBtn">
+                        Copy
+                    </button>
+                </div>
+
+                <pre id="codeOutput"><code>
+Your generated code will appear here...
+                </code></pre>
+
+            </section>
+
+
+            <!-- Preview -->
+            <section class="preview-panel">
+
+                <div class="panel-header">
+
+                    <span>🌐 Live Preview</span>
+
+                    <button id="refreshBtn">
+                        ↻
+                    </button>
+
+                </div>
+
+                <iframe
+                    id="preview"
+                    title="Generated Website Preview">
+                </iframe>
+
+            </section>
+
+        </section>
+
+
+        <!-- AI Modification -->
+        <section class="modify-section">
+
+            <div class="modify-header">
+
+                <div>
+                    <span class="badge">✨ AI EDITOR</span>
+
+                    <h2>
+                        Modify your website with AI
+                    </h2>
+
+                    <p>
+                        Ask AI to change or improve the generated website.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="modify-box">
+
+                <textarea
+    id="modifyPrompt"
+    name="modify-prompt"
+    autocomplete="off"
+    spellcheck="false"
+    placeholder="Example: Make the website blue, add smooth animations..."
+></textarea>
+
+                <button id="modifyBtn">
+                    ✨ Modify Website
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+        <p>AI Website Generator • Built with HTML, CSS, JavaScript, FastAPI & Gemini</p>
+    </footer>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
